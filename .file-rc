@@ -1,0 +1,40 @@
+
+export fh="$(dirname "${BASH_SOURCE[0]}")"
+
+defn clr clear-file
+
+defn es excise-substring
+# defn ks excise-substring
+defn rms excise-substring
+
+defn ub unbak
+
+num_files() {
+	for arg in "$@"; do
+		tab=$'\t'
+		num="$(find "$arg" -type f | wc -l)"
+		echo "$num$tab$arg"
+	done
+}
+export -f num_files
+defn nf num_files
+
+num_files_sizes() {
+	for arg in "$@"; do
+		tab=$'\t'
+		num="$(find "$arg" -type f | wc -l)"
+		size="$(du -sh "$arg")"
+		echo "$num$tab$size$tab$arg"
+	done
+}
+export -f num_files_sizes
+defn nfs num_files_sizes
+
+sha_dir() {
+	for dir in "$@"; do
+		d="${dir%/}"
+		escaped="$(echo "$d/" | escape-regex)"
+		find "$d" -type f | p shasum | perl -pe "s/$escaped//" | sort -k2
+	done
+}
+export -f sha_dir
