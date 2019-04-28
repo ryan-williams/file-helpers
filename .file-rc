@@ -38,3 +38,19 @@ sha_dir() {
 	done
 }
 export -f sha_dir
+
+cp-mkdir() {
+	if [ $# -lt 2 ]; then
+		echo "Usage: $0 <src> [..src] <dest>" >&2
+		return 1
+	fi
+	last="${@: -1}"
+	if [ "${last: -1}" == "/" ]; then
+		mkdir -p "$last"
+	else
+		mkdir -p "$(dirname "$last")"
+	fi
+	cp "$@"
+}
+export -f cp-mkdir
+defn cpm cp-mkdir
