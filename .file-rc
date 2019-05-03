@@ -39,7 +39,7 @@ sha_dir() {
 }
 export -f sha_dir
 
-cp-mkdir() {
+cp_mkdir() {
 	if [ $# -lt 2 ]; then
 		echo "Usage: $0 <src> [..src] <dest>" >&2
 		return 1
@@ -52,5 +52,5 @@ cp-mkdir() {
 	fi
 	cp "$@"
 }
-export -f cp-mkdir
-defn cpm cp-mkdir
+export -f cp_mkdir
+defn cpm cp_mkdir
