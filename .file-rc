@@ -1,8 +1,6 @@
 
 export fh="$(dirname "${BASH_SOURCE[0]}")"
 
-defn clr clear-file
-
 defn es excise-substring
 # defn ks excise-substring
 defn rms excise-substring
