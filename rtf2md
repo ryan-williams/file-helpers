@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+set -e
+
+if [ $# -eq 1 ]; then
+    in="$1"; shift
+    out="${in%.*}.md"
+elif [ $# -eq 2 ]; then
+    in="$1"; shift
+    out="$1"; shift
+else
+    echo "Usage: $0 <in> [out]" >&2
+    exit 1
+fi
+
+cat "$in" | \
+textutil -stdin -convert html -stdout | \
+pandoc --from=html --to=markdown > "$out"
