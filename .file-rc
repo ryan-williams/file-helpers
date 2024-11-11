@@ -39,7 +39,7 @@ export -f sha_dir
 
 cp_mkdir() {
 	if [ $# -lt 2 ]; then
-		echo "Usage: $0 <src> [..src] <dest>" >&2
+		echo "Usage: ${FUNCNAME[0]} <src> [..src] <dest>" >&2
 		return 1
 	fi
 	last="${@: -1}"
