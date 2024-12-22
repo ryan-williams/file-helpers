@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+
+set -e
+
+verbose=
+check_file=1
+check_nul=1
+check_chars=1
+
+usage() {
+    echo "Usage: $0 [-v] [-f] [-0] [-c] [path]" >&2
+    echo "  -v: verbose output" >&2
+    echo "  -f: check mime type via 'file'" >&2
+    echo "  -0: check for NUL bytes" >&2
+    echo "  -c: check for non-printable chars" >&2
+    echo "Default is all checks enabled" >&2
+    exit 127
+}
+
+log() {
+    if [ -n "$verbose" ]; then
+        echo "$@" >&2
+    fi
+}
+
+# Parse options
+while getopts "vf0ch" opt; do
+    case $opt in
+        v) verbose=1 ;;
+        f) check_file=1; check_nul=0; check_chars=0 ;;
+        0) check_file=0; check_nul=1; check_chars=0 ;;
+        c) check_file=0; check_nul=0; check_chars=1 ;;
+        h) usage ;;
+        *) usage ;;
+    esac
+done
+
+# If no specific checks requested, enable all
+if [ $check_file -eq 0 ] && [ $check_nul -eq 0 ] && [ $check_chars -eq 0 ]; then
+    check_file=1
+    check_nul=1
+    check_chars=1
+fi
+
+shift $((OPTIND-1))
+
+if [ $# -gt 1 ]; then
+    usage
+fi
+
+if [ $# -eq 0 ] || [ "$1" = "-" ]; then
+    tmpfile=$(mktemp)
+    trap 'rm -f "$tmpfile"' EXIT
+    cat > "$tmpfile"
+    set -- "$tmpfile"
+fi
+
+if [ $check_file -eq 1 ] && file -b --mime-encoding "$1" | grep -q binary; then
+    log "binary (via file)" >&2
+    exit 0
+fi
+
+if [ $check_nul -eq 1 ] && LC_ALL=C grep -P "[\x00]" "$1" 2>/dev/null; then
+    log "binary (found NUL)" >&2
+    exit 0
+fi
+
+if [ $check_chars -eq 1 ] && LC_ALL=C grep -l '[^[:print:][:space:]]' "$1" >/dev/null; then
+    log "binary (non-printable)" >&2
+    exit 0
+fi
+
+log "plaintext"
+exit 1
