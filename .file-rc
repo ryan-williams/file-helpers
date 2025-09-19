@@ -59,3 +59,5 @@ defn ewl ends-with-newline
 defn ewnl ends-with-newline
 defn mtl missing-trailing-newline
 defn mtnl missing-trailing-newline
+defn etl ensure-trailing-newline
+defn etnl ensure-trailing-newline

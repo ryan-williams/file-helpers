@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+if [ $# -eq 0 ]; then
+    # Process stdin
+    content=$(cat)
+    if [ -n "$content" ]; then
+        echo -n "$content"
+        last_byte=$(echo -n "$content" | tail -c1 | xxd -p)
+        if [ "$last_byte" != "0a" ]; then
+            echo
+        fi
+    fi
+else
+    # Process files
+    for file in "$@"; do
+        if missing-trailing-newline "$file"; then
+            echo >> "$file"
+            echo "Added trailing newline to: $file" >&2
+        fi
+    done
+fi
