@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+if [ $# -eq 0 ]; then
+    # Process stdin - work directly with stdin to preserve exact content
+    tmpfile=$(mktemp)
+    cat > "$tmpfile"
+
+    # Skip empty input
+    if [ ! -s "$tmpfile" ]; then
+        rm "$tmpfile"
+        exit 1
+    fi
+
+    # Check if binary
+    if is-binary "$tmpfile"; then
+        rm "$tmpfile"
+        exit 1
+    fi
+
+    last_byte=$(tail -c1 "$tmpfile" | xxd -p)
+    rm "$tmpfile"
+else
+    # Process file
+    # Skip empty files
+    if [ ! -s "$1" ]; then
+        exit 1
+    fi
+
+    # Only check text files
+    if is-binary "$1"; then
+        exit 1
+    fi
+
+    last_byte=$(tail -c1 "$1" | xxd -p)
+fi
+
+if [ "$last_byte" = "0a" ]; then
+    exit 1
+else
+    exit 0
+fi
