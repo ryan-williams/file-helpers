@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+if [ $# -eq 0 ]; then
+    # Process stdin
+    last_byte=$(tail -c1 | xxd -p)
+else
+    # Process file
+    last_byte=$(tail -c1 "$1" | xxd -p)
+fi
+
+if [ "$last_byte" = "0a" ]; then
+    exit 0
+else
+    exit 1
+fi

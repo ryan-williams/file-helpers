@@ -55,3 +55,5 @@ defn cpm cp_mkdir
 
 defn sz stat -c %s
 defn isb is-binary
+defn ewl ends-with-newline
+defn ewnl ends-with-newline
