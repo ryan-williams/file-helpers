@@ -54,6 +54,7 @@ export -f cp_mkdir
 defn cpm cp_mkdir
 
 defn sz stat -c %s
+defn ib is-binary
 defn isb is-binary
 defn ewl ends-with-newline
 defn ewnl ends-with-newline
